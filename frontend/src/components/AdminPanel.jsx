@@ -18,27 +18,52 @@ function AdminPanel() {
   const [editName, setEditName] = useState('');
   const [editInsurer, setEditInsurer] = useState('');
 
+  // ✅ FIXED: Backend validates credentials, not frontend
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (username === 'admin' && password === 'admin123') {
+    
+    setLoading(true);
+    
+    try {
+      // Try to fetch policies with provided credentials
+      const response = await axios.get(`${API_URL}/admin/policies`, {
+        auth: { username, password }
+      });
+      
+      // If successful, credentials are correct
       setIsAuthenticated(true);
-      loadPolicies();
-    } else {
-      alert('Invalid credentials. Use admin / admin123');
+      setPolicies(response.data.policies || []);
+      setUploadStatus('✅ Login successful');
+      
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Invalid credentials');
+      setUsername('');
+      setPassword('');
+    } finally {
+      setLoading(false);
     }
   };
 
   const loadPolicies = async () => {
+    if (!isAuthenticated) return;
+    
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/admin/policies`, {
-        auth: { username: 'admin', password: 'admin123' }
+        auth: { username, password }
       });
       console.log('Policies loaded:', response.data);
       setPolicies(response.data.policies || []);
     } catch (error) {
       console.error('Error loading policies:', error);
-      setUploadStatus('❌ Failed to load policies');
+      // If auth fails, log out
+      if (error.response?.status === 401) {
+        setIsAuthenticated(false);
+        setUploadStatus('❌ Session expired. Please login again.');
+      } else {
+        setUploadStatus('❌ Failed to load policies');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,7 +84,7 @@ function AdminPanel() {
 
     try {
       const response = await axios.post(`${API_URL}/admin/upload-policy`, formData, {
-        auth: { username: 'admin', password: 'admin123' },
+        auth: { username, password },
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -78,6 +103,10 @@ function AdminPanel() {
     } catch (error) {
       console.error('Upload error:', error);
       setUploadStatus(`❌ Error: ${error.response?.data?.detail || error.message}`);
+      // If auth fails, log out
+      if (error.response?.status === 401) {
+        setIsAuthenticated(false);
+      }
     } finally {
       setUploading(false);
     }
@@ -92,7 +121,7 @@ function AdminPanel() {
       const encodedId = encodeURIComponent(policyId);
       
       const response = await axios.delete(`${API_URL}/admin/policy/${encodedId}`, {
-        auth: { username: 'admin', password: 'admin123' }
+        auth: { username, password }
       });
       
       if (response.data.success) {
@@ -105,6 +134,9 @@ function AdminPanel() {
     } catch (error) {
       console.error('Delete error:', error);
       setUploadStatus(`❌ Error deleting: ${error.response?.data?.detail || error.message}`);
+      if (error.response?.status === 401) {
+        setIsAuthenticated(false);
+      }
     }
   };
 
@@ -126,7 +158,7 @@ function AdminPanel() {
           insurer: editInsurer || 'Not specified'
         },
         {
-          auth: { username: 'admin', password: 'admin123' }
+          auth: { username, password }
         }
       );
       
@@ -143,6 +175,9 @@ function AdminPanel() {
     } catch (error) {
       console.error('Edit error:', error);
       setUploadStatus(`❌ Error editing: ${error.response?.data?.detail || error.message}`);
+      if (error.response?.status === 401) {
+        setIsAuthenticated(false);
+      }
     }
   };
 
@@ -158,29 +193,14 @@ function AdminPanel() {
     setEditInsurer('');
   };
 
+  // Auto-refresh policies every 30 seconds
   useEffect(() => {
-  if (isAuthenticated) {
-    loadPolicies();
-    // Only set interval if the component is visible
-    let interval;
-    
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        if (interval) clearInterval(interval);
-      } else {
-        interval = setInterval(loadPolicies, 30000); // 30 seconds instead of 10
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    interval = setInterval(loadPolicies, 30000);
-    
-    return () => {
-      if (interval) clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }
-}, [isAuthenticated]);
+    if (isAuthenticated) {
+      loadPolicies();
+      const interval = setInterval(loadPolicies, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return (
@@ -202,10 +222,12 @@ function AdminPanel() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button type="submit" className="submit-btn">Login</button>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? 'Checking...' : 'Login'}
+            </button>
           </form>
           <p style={{ marginTop: '20px', fontSize: '0.9rem', color: '#718096' }}>
-            Default: admin / admin123
+            Default credentials are set in backend/.env
           </p>
         </div>
       </div>
@@ -251,7 +273,6 @@ function AdminPanel() {
             {policies.map((policy, idx) => (
               <li key={idx}>
                 {editingPolicy === policy.source ? (
-                  // Edit Mode
                   <div style={{ width: '100%' }}>
                     <div style={{ marginBottom: '10px' }}>
                       <input
@@ -312,7 +333,6 @@ function AdminPanel() {
                     </div>
                   </div>
                 ) : (
-                  // View Mode
                   <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                       <strong style={{ fontSize: '1rem' }}>{policy.name || policy.source}</strong>
@@ -372,6 +392,9 @@ function AdminPanel() {
           <li><strong>Delete removes the policy completely from the knowledge base</strong></li>
           <li><strong>Edit updates the policy name and insurer for all chunks</strong></li>
         </ol>
+        <p style={{ marginTop: '10px', fontSize: '0.85rem', color: '#718096' }}>
+          Admin credentials are stored in backend/.env file (ADMIN_USER and ADMIN_PASS)
+        </p>
       </div>
     </div>
   );
