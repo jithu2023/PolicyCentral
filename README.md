@@ -15,7 +15,9 @@ An empathetic, RAG-based health insurance advisor that helps users find the righ
 - [Recommendation Logic](#-recommendation-logic)
 - [Document Parsing & Chunking](#-document-parsing--chunking)
 - [Setup Instructions](#-setup-instructions)
+- [Running the Application](#-running-the-application)
 - [Testing](#-testing)
+- [Project Structure](#-project-structure)
 - [Demo Credentials](#-demo-credentials)
 - [Compliance Checklist](#-compliance-checklist)
 
@@ -24,6 +26,7 @@ An empathetic, RAG-based health insurance advisor that helps users find the righ
 ## ✨ Features
 
 ### User Portal
+
 | Feature | Implementation |
 |---------|----------------|
 | **6-field profile form** | Name, Age, Lifestyle, Pre-existing Conditions, Income, City Tier |
@@ -35,11 +38,12 @@ An empathetic, RAG-based health insurance advisor that helps users find the righ
 | **Medical Guardrail** | Declines medical advice ("Please consult a doctor") |
 
 ### Admin Panel
+
 | Feature | Implementation |
 |---------|----------------|
 | **Secure authentication** | HTTP Basic Auth (env variables) |
 | **Multi-format upload** | PDF (pdfplumber), TXT (UTF-8), JSON (recursive extraction) |
-| **Document management** | View list, delete from vector store |
+| **Document management** | View, Edit, Delete from vector store |
 | **Vector store sync** | Immediate removal from RAG pipeline |
 
 ---
@@ -88,9 +92,10 @@ I evaluated both frameworks against the assignment requirements:
 ## 🧠 Recommendation Logic
 
 ### Matching Algorithm: Semantic RAG (No Hardcoded Rules)
+
+```
 User Profile → Query Construction → Vector Similarity Search → Retrieved Chunks → LLM Reasoning → Structured Output
-
-
+```
 
 ### How Each Field Influences the Recommendation
 
@@ -112,15 +117,16 @@ User Profile → Query Construction → Vector Similarity Search → Retrieved C
 4. **LLM Reasoning**: Groq generates structured output with source attribution
 
 ### Example Flow
+
+```
 Input: 52yo, sedentary, diabetes+hypertension, 8-15L income, Tier-2
-↓
+  ↓
 Query: "Insurance for 52yo sedentary diabetic hypertensive from Tier-2"
-↓
+  ↓
 Retrieved: Policy chunks mentioning waiting periods, diabetes coverage, co-pay
-↓
+  ↓
 Output: HDFC ERGO (higher cover, restoration benefit despite longer waiting period)
-
-
+```
 
 ### Empathy & Tone Implementation
 
@@ -147,18 +153,19 @@ The prompt explicitly requires:
 
 ### Chunking Strategy
 
+```python
 chunk_size = 500 words
 overlap = 50 words (10%)
-Why these values:
+```
 
-500 words: Optimal for sentence-transformers/all-MiniLM-L6-v2 (512 token limit)
+**Why these values:**
+- **500 words**: Optimal for sentence-transformers/all-MiniLM-L6-v2 (512 token limit)
+- **10% overlap**: Prevents context loss at chunk boundaries
+- **Semantic boundaries**: Prefer paragraph breaks when available
 
-10% overlap: Prevents context loss at chunk boundaries
+### Metadata Stored Per Chunk
 
-Semantic boundaries: Prefer paragraph breaks when available
-
-Metadata Stored Per Chunk
-json
+```json
 {
   "source": "policy1.pdf",
   "type": "policy",
@@ -167,16 +174,20 @@ json
   "total_chunks": 12,
   "file_type": "PDF"
 }
-🚀 Setup Instructions
-Prerequisites
-Python 3.11+ (3.14 works, 3.11 recommended)
+```
 
-Node.js 18+
+---
 
-Groq API key (free at console.groq.com)
+## 🚀 Setup Instructions
 
-Step 1: Clone & Backend Setup
-bash
+### Prerequisites
+- Python 3.11+ (3.14 works, 3.11 recommended)
+- Node.js 18+
+- Groq API key ([free at console.groq.com](https://console.groq.com))
+
+### Step 1: Clone & Backend Setup
+
+```bash
 git clone <your-repo-url>
 cd PolicyCentral/backend
 
@@ -191,55 +202,98 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
-Step 2: Environment Configuration
-bash
-cp .env.example .env
-.env.example (copy this to .env):
+```
 
-env
+### Step 2: Environment Configuration
+
+```bash
+cp .env.example .env
+```
+
+**.env.example** (copy this to .env):
+
+```env
 GROQ_API_KEY=your_groq_api_key_here
 ADMIN_USER=admin
 ADMIN_PASS=admin123
-Step 3: Frontend Setup
-bash
+```
+
+> **⚠️ Important:** Never commit your `.env` file. The `.env.example` is provided as a template.
+
+### Step 3: Frontend Setup
+
+```bash
 cd ../frontend
 npm install
-▶️ Running the Application
-Terminal 1 - Backend
-bash
+```
+
+---
+
+## ▶️ Running the Application
+
+### Terminal 1 - Backend
+
+```bash
 cd backend
 venv\Scripts\activate
 uvicorn main:app --reload --port 8000
-Terminal 2 - Frontend
-bash
+```
+
+### Terminal 2 - Frontend
+
+```bash
 cd frontend
 npm run dev
-Access Points
-URL	Purpose
-http://localhost:5173	User Portal
-http://localhost:8000/docs	Backend API Docs
-http://localhost:8000/admin/policies	Admin API
-🧪 Testing
-Upload Sample Policies
-bash
+```
+
+### Access Points
+
+| URL | Purpose |
+|-----|---------|
+| http://localhost:5173 | User Portal |
+| http://localhost:8000/docs | Backend API Docs |
+| http://localhost:8000/admin/policies | Admin API |
+
+---
+
+## 🧪 Testing
+
+### Upload Sample Policies
+
+```bash
 cd backend
 python test_upload.py
-Test Recommendation Engine
-bash
-python test_recommendation_real.py
-Test Chat & Session Memory
-bash
-python test_chat.py
-Verify Vector Store Contents
-bash
-python debug_policies.py
-Expected Output:
+```
 
-text
+### Test Recommendation Engine
+
+```bash
+python test_recommendation_real.py
+```
+
+### Test Chat & Session Memory
+
+```bash
+python test_chat.py
+```
+
+### Verify Vector Store Contents
+
+```bash
+python debug_policies.py
+```
+
+**Expected Output:**
+```
 Total chunks found: 15
 Sources: policy1.txt (5 chunks), policy2.json (5 chunks), policy3.pdf (5 chunks)
-📁 Project Structure
-text
+```
+
+---
+
+## 📁 Project Structure
+
+```
 PolicyCentral/
 ├── backend/
 │   ├── core/
@@ -247,7 +301,7 @@ PolicyCentral/
 │   ├── rag/
 │   │   └── vectorstore.py      # ChromaDB + embeddings
 │   ├── routes/
-│   │   ├── admin.py            # Upload/delete with auth
+│   │   ├── admin.py            # Upload/Edit/Delete with auth
 │   │   ├── chat.py             # Chat + session memory
 │   │   └── recommendation.py   # RAG recommendation
 │   ├── services/
@@ -273,39 +327,88 @@ PolicyCentral/
 │   └── package.json
 ├── README.md
 └── PRD.md
-🔑 Demo Credentials
-Role	Username	Password
-Admin	admin	admin123
-✅ Compliance Checklist
-Requirement	Spec Section	Status	Evidence
-Exactly 6 fields	3.1	✅	ProfileForm.jsx has 6 inputs
-RAG grounding (no hallucination)	4.2	✅	vectorstore.similarity_search()
-Peer comparison table	3.2.2	✅	Recommendation.jsx parses markdown table
-Coverage details table	3.2.2	✅	Extracted from LLM output
-Why this policy (150-250 words)	3.2.2	✅	Prompt enforces length, 3+ fields referenced
-Term definitions in chat	3.3	✅	ChatBox.jsx + test_chat.py passes
-Personalized examples	3.3	✅	Uses user's conditions from database
-Session memory	3.3	✅	SQLite + database.py persists profiles
-Admin upload/delete	3.4	✅	AdminPanel.jsx + admin.py
-Multi-format (PDF/TXT/JSON)	3.4	✅	policy_service.py handles all three
-Medical advice guardrail	4.2	✅	Prompt instruction + test_chat.py
-No hardcoded secrets	4.3	✅	.env.example provided
-Unit test	4.3	✅	test_recommendation_real.py
-📝 Sample Policy Documents
-Three sample policies are included in backend/sample_policies/:
+```
 
-File	Format	Content
-policy1.txt	TXT	Aarogya Plus - Star Health
-policy2.json	JSON	Family First Complete - HDFC ERGO
-policy3.pdf	PDF	Care Basic Health Insurance
+---
+
+## 🔑 Demo Credentials
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | admin123 |
+
+---
+
+## 📝 Sample Policy Documents
+
+Three sample policies are included in `backend/sample_policies/`:
+
+| File | Format | Content |
+|------|--------|---------|
+| policy1.txt | TXT | Aarogya Plus - Star Health |
+| policy2.json | JSON | Family First Complete - HDFC ERGO |
+| policy3.pdf | PDF | Care Basic Health Insurance |
+
 Reviewers can upload these or their own PDF/TXT/JSON files.
 
-🙏 Acknowledgments
-Groq for free high-speed LLM inference (1200+ tokens/sec)
-LangChain for RAG abstractions
-Sentence-transformers for quality embeddings
-Aarogyaid for the thoughtful assignment
+---
 
-Submission Date: April 23, 2026
-Role: AI Engineer Candidate
+## ✅ Compliance Checklist
+
+| Requirement | Spec Section | Status | Evidence |
+|-------------|--------------|--------|----------|
+| Exactly 6 fields | 3.1 | ✅ | ProfileForm.jsx has 6 inputs |
+| RAG grounding (no hallucination) | 4.2 | ✅ | vectorstore.similarity_search() |
+| Peer comparison table | 3.2.2 | ✅ | Recommendation.jsx parses markdown table |
+| Coverage details table | 3.2.2 | ✅ | Extracted from LLM output |
+| Why this policy (150-250 words) | 3.2.2 | ✅ | Prompt enforces length, 3+ fields referenced |
+| Term definitions in chat | 3.3 | ✅ | ChatBox.jsx + test_chat.py passes |
+| Personalized examples | 3.3 | ✅ | Uses user's conditions from database |
+| Session memory | 3.3 | ✅ | SQLite + database.py persists profiles |
+| Admin upload/edit/delete | 3.4 | ✅ | AdminPanel.jsx + admin.py |
+| Multi-format (PDF/TXT/JSON) | 3.4 | ✅ | policy_service.py handles all three |
+| Medical advice guardrail | 4.2 | ✅ | Prompt instruction + test_chat.py |
+| No hardcoded secrets | 4.3 | ✅ | .env.example provided |
+| Unit test | 4.3 | ✅ | test_recommendation_real.py |
+
+---
+
+## 🙏 Acknowledgments
+
+- **Groq** for free high-speed LLM inference (1200+ tokens/sec)
+- **LangChain** for RAG abstractions
+- **Sentence-transformers** for quality embeddings
+- **AarogyaAid** for the thoughtful assignment
+
+---
+
+**Submission Date:** April 23, 2026  
+**Role:** AI Engineer Candidate
+```
+
+---
+
+## Now commit and push the updated README:
+
+```bash
+# Add the updated README
+git add README.md
+
+# Commit the changes
+git commit -m "docs: Fix formatting in README (code blocks, headers, examples)"
+
+# Push to GitHub
+git push origin main
+```
+
+## Summary of Fixes Made:
+
+| Issue | Before | After |
+|-------|--------|-------|
+| Missing code block language | `chunk_size = 500 words` | ` ```python chunk_size = 500 words ``` ` |
+| Missing JSON code block | Plain text JSON | ` ```json { ... } ``` ` |
+| Missing Expected Output formatting | Plain text | ` ``` Total chunks found: 15 ``` ` |
+| Missing flowchart | Placeholder | Text-based flow diagram |
+| Missing important note | None | Added "Never commit .env" warning |
+| Admin features | Upload/delete only | Upload/Edit/Delete |
 
