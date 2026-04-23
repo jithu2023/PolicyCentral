@@ -1,0 +1,27 @@
+@"
+Policy Name: Family First Plan
+Insurer: HDFC ERGO
+Premium Range: Rs 8,000 - Rs 12,000 per year
+Cover Amount: Rs 3,00,000
+Waiting Period for Pre-existing Diseases: 48 months
+Waiting Period for Specific Diseases: 12 months
+Co-pay: 20% for all claims
+Claim Type: Cashless only
+Network Hospitals: 1000+ across all cities
+
+INCLUSIONS:
+- Hospitalization expenses
+- Maternity cover (after 24 months)
+- Newborn baby cover
+- Vaccination expenses up to Rs 2,000
+
+EXCLUSIONS:
+- Pre-existing diseases first 48 months
+- Obesity treatment
+- Fertility treatments
+- Experimental treatments
+
+SUBMITS:
+- Room rent: Rs 5,000 per day max
+- ICU: Rs 10,000 per day max
+"@ | Out-File -FilePath sample_policies/policy2.txt -Encoding UTF8

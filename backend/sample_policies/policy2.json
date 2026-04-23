@@ -1,0 +1,42 @@
+{
+  "policy_name": "Family First Complete Plan",
+  "insurer": "HDFC ERGO",
+  "premium": {
+    "annual": 15000,
+    "monthly": 1250,
+    "for_age_30": 12000,
+    "for_age_50": 18000
+  },
+  "cover_amount": 1000000,
+  "waiting_periods": {
+    "pre_existing_diseases": 36,
+    "specific_diseases": 24,
+    "maternity": 24
+  },
+  "co_pay": {
+    "metro_hospitals": 0,
+    "tier2_hospitals": 10,
+    "tier3_hospitals": 20
+  },
+  "claim_type": "Cashless",
+  "inclusions": [
+    "Hospitalization expenses",
+    "Maternity cover (after 24 months)",
+    "Newborn baby cover from day 1",
+    "Vaccination expenses up to Rs 3,000",
+    "Health checkup every year",
+    "No claim bonus: 10% increase each year"
+  ],
+  "exclusions": [
+    "Pre-existing diseases first 36 months",
+    "Obesity treatment",
+    "Fertility treatments",
+    "Experimental treatments",
+    "Cosmetic surgery"
+  ],
+  "benefits": {
+    "restoration_benefit": "100% sum insured restoration once per year",
+    "cumulative_bonus": "Up to 50% increase for claim-free years",
+    "daycare_procedures": "500+ procedures covered"
+  }
+}

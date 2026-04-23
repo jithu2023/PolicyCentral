@@ -1,0 +1,27 @@
+@"
+Policy Name: Basic Care Plan
+Insurer: Care Health Insurance
+Premium Range: Rs 5,000 - Rs 8,000 per year
+Cover Amount: Rs 2,00,000
+Waiting Period for Pre-existing Diseases: 48 months
+Waiting Period for Specific Diseases: 36 months
+Co-pay: 30% for all claims
+Claim Type: Reimbursement only
+Network Hospitals: 100+ in Metro only
+
+INCLUSIONS:
+- Hospitalization expenses
+- Daycare procedures
+- Pre-hospitalization (30 days)
+- Post-hospitalization (30 days)
+
+EXCLUSIONS:
+- All pre-existing diseases for 48 months
+- Dental treatments
+- Cosmetic procedures
+- Alternative treatments
+
+SUBMITS:
+- Room rent: Rs 3,000 per day max
+- No ICU cover
+"@ | Out-File -FilePath sample_policies/policy3.txt -Encoding UTF8

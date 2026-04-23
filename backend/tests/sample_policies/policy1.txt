@@ -1,0 +1,29 @@
+Policy Name: Aarogya Plus Health Insurance
+Insurer: Star Health Insurance
+Premium: Rs 12,000 per year
+Cover Amount: Rs 5,00,000
+Waiting Period for Pre-existing Diseases: 24 months
+Waiting Period for Specific Diseases: 12 months
+Co-pay: 10% for network hospitals, 20% for non-network
+Claim Type: Cashless and Reimbursement
+
+INCLUSIONS:
+- Hospitalization expenses up to sum insured
+- Daycare procedures (over 500 procedures)
+- Pre-hospitalization expenses (60 days before admission)
+- Post-hospitalization expenses (90 days after discharge)
+- Ambulance charges up to Rs 2,500
+- Organ donor expenses up to Rs 50,000
+
+EXCLUSIONS:
+- Dental treatments (unless accidental)
+- Cosmetic surgery
+- Alternative treatments (Ayurveda, Homeopathy)
+- War and nuclear risks
+- Self-inflicted injuries
+- Substance abuse treatment
+
+NETWORK HOSPITALS:
+- Metro cities: 500+ hospitals
+- Tier-2 cities: 200+ hospitals
+- Tier-3 cities: 50+ hospitals
