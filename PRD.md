@@ -1,4 +1,3 @@
-
 # PRD.md - Complete File
 
 # Product Requirements Document (PRD)
@@ -291,23 +290,5 @@ The system helps patients like Rajesh (52, diabetic) navigate one of the most co
 Prepared for: AarogyaAid Engineering Team
 Role: AI Engineer Candidate
 Submission Date: April 23, 2026
-Repository: [Your GitHub URL]
+Repository: [https://github.com/jithu2023/PolicyCentral]
 
----
-
-## How to Save These Files
-
-# Navigate to your project root
-cd C:\Users\jithu\PolicyCentral
-
-# Create README.md (copy the first code block above)
-# Create PRD.md (copy the second code block above)
-
-# Verify files were created
-ls README.md
-ls PRD.md
-
-# Add to git
-git add README.md PRD.md
-git commit -m "Add comprehensive README and PRD documentation"
-git push
