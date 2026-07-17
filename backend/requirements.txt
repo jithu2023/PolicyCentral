@@ -3,11 +3,12 @@ fastapi
 uvicorn[standard]
 python-multipart
 
-# AI & LangChain (Let pip resolve versions)
+# AI & LangChain
 langchain
 langchain-groq
 langchain-chroma
 langchain-community
+langchain-huggingface  # ADD THIS - it was missing!
 
 # Vector Store & Embeddings
 chromadb
