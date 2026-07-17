@@ -1,21 +1,21 @@
 # Core Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
+fastapi
+uvicorn[standard]
+python-multipart
 
-# AI & LangChain (Compatible versions)
-langchain==0.1.7
-langchain-groq==0.1.2
-langchain-chroma==0.1.3
-langchain-community==0.0.21
+# AI & LangChain (Let pip resolve versions)
+langchain
+langchain-groq
+langchain-chroma
+langchain-community
 
 # Vector Store & Embeddings
-chromadb==0.4.22
-sentence-transformers==2.7.0
+chromadb
+sentence-transformers
 
 # PDF Processing
-pypdf==4.0.1
+pypdf
 
 # Utilities
-python-dotenv==1.0.0
-pydantic==1.10.13
+python-dotenv
+pydantic
