@@ -1,5 +1,3 @@
-# backend/requirements.txt - CORRECTED VERSIONS
-
 # Core Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
@@ -8,15 +6,15 @@ python-multipart==0.0.6
 # AI & LangChain
 langchain==0.1.0
 langchain-groq==0.1.0
-langchain-chroma==0.1.2  # Changed from 0.1.0 to 0.1.2 (available version)
+langchain-chroma==0.1.2
 langchain-huggingface==0.0.3
 
 # Vector Store & Embeddings
 chromadb==0.4.22
 sentence-transformers==2.2.2
 
-# PDF Processing
-pymupdf==1.23.0
+# PDF Processing - Using pypdf (pure Python, no compilation needed!)
+pypdf==4.0.1
 
 # Utilities
 python-dotenv==1.0.0

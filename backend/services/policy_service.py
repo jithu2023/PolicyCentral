@@ -1,20 +1,21 @@
-# backend/services/policy_service.py
-import pdfplumber
+from pypdf import PdfReader  # Changed from pdfplumber to pypdf
 import json
 import os
 from rag.vectorstore import vectorstore
 
 def extract_text_from_pdf(file):
-    """Extract text from PDF file"""
+    """Extract text from PDF file using pypdf"""
     text = ""
     try:
         file.file.seek(0)
         
-        with pdfplumber.open(file.file) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text += page_text + "\n\n"
+        # Read the PDF file
+        pdf_reader = PdfReader(file.file)
+        
+        for page in pdf_reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n\n"
         
         if not text.strip():
             text = "No text content found in PDF"
@@ -138,9 +139,8 @@ async def process_policy(file):
             "total_chunks": len(chunks)
         } for i in range(len(chunks))]
         
-        # Add to vectorstore (auto-persists in new ChromaDB)
+        # Add to vectorstore (auto-persists in ChromaDB)
         vectorstore.add_texts(chunks, metadatas=metadatas)
-        # REMOVED: vectorstore.persist() - no longer needed!
         
         print(f"💾 Stored {len(chunks)} chunks in vector database")
         
